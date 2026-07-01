@@ -151,22 +151,6 @@ seated.
 sudo opkg update
 ```
 
-```
-python3 -m pip install --break-system-packages iotconnect-sdk-lite pyserial
-```
-
-> [!NOTE]
-> This demo uses the standard `iotconnect-sdk-lite` package unmodified — the WiFi module doesn't need a different SDK.
-> It only needs `pyserial` in addition, used by `rnwf11_transport.py` which handles all networking through the module:
-> DNS-over-TCP for hostname resolution, HTTPS for the SDK's discovery and identity calls, and MQTT bridging for the
-> ongoing telemetry connection.
-
-6. Then run these commands to create and move into a directory for your demo files:
-
-```
-mkdir -p /opt/demo && cd /opt/demo
-```
-
 > [!TIP]
 > To gain access to "copy" and "paste" functions inside of a PuTTY terminal window, you can CTRL+RIGHTCLICK within the
 > window to utilize a dropdown menu with these commands. This is very helpful for copying/pasting between your browser and
@@ -175,21 +159,21 @@ mkdir -p /opt/demo && cd /opt/demo
 ## Enable the WiFi Module's UART
 
 The mikroBUS1 RX/TX pins are not enabled as a UART by default — out of the box, the board's device tree leaves them
-unconfigured. The [`wifi-module`](./wifi-module) folder in this repo contains a device tree overlay and a setup
-script that enables them permanently.
+unconfigured. The demo package includes a device tree overlay and a setup script that enables them permanently.
 
-1. From your PC, copy the `wifi-module` folder to the board (replace `<board-ip>` with your board's IP address):
-
-   ```
-   scp -r wifi-module root@<board-ip>:/root/wifi-module
-   ```
-
-2. SSH into the board (or use your serial terminal) and run the setup script:
+1. On the board, download and extract the demo package:
 
    ```
-   ssh root@<board-ip>
-   cd /root/wifi-module
-   python3 apply_wifi_overlay.py
+   mkdir -p /opt/demo && cd /opt/demo
+   wget -O demo.zip <PACKAGE_URL>
+   unzip demo.zip
+   bash install.sh
+   ```
+
+2. Run the setup script:
+
+   ```
+   python3 /opt/demo/apply_wifi_overlay.py
    ```
 
    This backs up the board's existing boot environment, patches it to load the WiFi UART overlay on every boot, and
@@ -249,24 +233,21 @@ Follow [this guide](https://github.com/avnet-iotconnect/iotc-python-lite-sdk-dem
 
 # 6. Using the Demo
 
-The onboarding process in the previous section downloads the standard (Ethernet) `app.py` to `/opt/demo`. This demo
-replaces it with a version that talks to the EV12H55A WiFi module instead. From your PC, copy this repo's
-[`src`](./src) files over it (replace `<board-ip>` with your board's IP address):
+The demo files were already extracted to `/opt/demo` during the WiFi UART setup in the previous section. The only
+remaining step before running is to create your WiFi credentials file:
 
 ```
-scp src/app.py src/rnwf11_transport.py root@<board-ip>:/opt/demo/
-```
-
-Then create your own WiFi config from the template and fill in your network's SSID and password:
-
-```
-scp src/wifi_config.json.example root@<board-ip>:/opt/demo/wifi_config.json
-ssh root@<board-ip> nano /opt/demo/wifi_config.json
+cp /opt/demo/wifi_config.json.example /opt/demo/wifi_config.json
+nano /opt/demo/wifi_config.json
 ```
 
 > [!NOTE]
 > You don't need to look up the network's security type yourself — the app scans for it automatically the first
 > time it joins.
+
+> [!TIP]
+> At this point the Ethernet cable is no longer needed. You can unplug it now — the app routes all network traffic
+> (DNS, HTTPS, and MQTT) through the WiFi module and does not use the board's Ethernet interface at runtime.
 
 Run the demo with this command:
 
