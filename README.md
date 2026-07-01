@@ -35,7 +35,7 @@ LVDS w/ 2D graphics, dual Gigabit Ethernet w/ TSN and CAN-FD.</td>
 > The EV12H55A WiFi module communicates over a UART using ASCII AT commands — it does not present itself to Linux as
 > a standard network interface (there is no `wlan0`). The demo application in this repo talks to it directly via
 > those AT commands for all network traffic: DNS resolution, HTTPS discovery/identity calls, and the MQTT connection.
-> **No Ethernet cable is required at runtime.**
+> While it is required for the intial installation and setup step, **an ethernet connection is not required at runtime.**
 
 # 2. Requirements
 
