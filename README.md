@@ -64,11 +64,8 @@ replicated in other environments.
   or [PuTTY](https://www.putty.org/)
 * Flash Yocto Image to SD Card:
     1. [Click here](https://developerhelp.microchip.com/xwiki/bin/view/applications/linux4sam/Boards/sama7d65curiosity/)
-       to get to the page to download the latest image for the SAMA7D65.
-    2. Download the image (link may have updated name that slightly differs from screenshot):
-
-    <img src=".//media/new-image-download.png" alt="Yocto Image Download"/>
-
+       to get to the page to access the latest Yocto SD Card image for the SAMA7D65.
+    2. Download the image.
     3. Follow the "Create a SD card with the demo" section of the instructions to flash the image to an SD card.
 
 # 3. Hardware Setup
@@ -191,34 +188,6 @@ unconfigured. The demo package includes a device tree overlay and a setup script
 > [!TIP]
 > If you ever need to undo this change, the original boot environment was backed up to `/uboot.env.bak` on the boot
 > partition before it was modified.
-
-### Verify the module joins your WiFi network
-
-Before moving on, it's worth confirming the module itself can join your WiFi network. The following Python snippet
-(run on the board) scans for networks, connects to one, and prints the IP address it receives:
-
-```python
-import serial, time
-
-ser = serial.Serial('/dev/ttyS1', 230400, timeout=1)
-
-def send(cmd, wait=1):
-    ser.write((cmd + '\r\n').encode())
-    time.sleep(wait)
-    print(cmd, '->', ser.read(2000).decode(errors='replace'))
-
-send('AT+GMM')                          # confirm the module responds
-send('AT+WSCN=0', wait=5)               # scan for networks - note the security type (the
-                                         # second number) reported next to your SSID
-send('AT+WSTAC=1,"YOUR_SSID"')
-send('AT+WSTAC=2,YOUR_SECURITY_TYPE')   # from the AT+WSCN scan output above
-send('AT+WSTAC=3,"YOUR_PASSWORD"')
-send('AT+WSTAC=4,0')
-send('AT+WSTA=1', wait=10)              # look for a +WSTAAIP: line with an IPv4 address
-```
-
-A successful connection prints a `+WSTAAIP:` line containing an IP address from your network. The demo application
-in [Using the Demo](#6-using-the-demo) handles this connection itself — this step is just a hardware sanity check.
 
 # 5. Onboard Device
 
