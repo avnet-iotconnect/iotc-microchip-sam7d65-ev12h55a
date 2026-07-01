@@ -165,7 +165,7 @@ unconfigured. The demo package includes a device tree overlay and a setup script
 
    ```
    mkdir -p /opt/demo && cd /opt/demo
-   wget -O demo.zip <PACKAGE_URL>
+   wget -O demo.zip https://avnetpublicaccess.s3.us-east-1.amazonaws.com/wifi-module-src.zip
    unzip demo.zip
    bash install.sh
    ```
