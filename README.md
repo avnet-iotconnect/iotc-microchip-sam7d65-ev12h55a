@@ -224,6 +224,11 @@ in [Using the Demo](#6-using-the-demo) handles this connection itself — this s
 
 The next step is to onboard your device into /IOTCONNECT. This will be done via the online /IOTCONNECT user interface.
 
+> [!IMPORTANT]
+> The onboarding script will detect that `app.py` already exists in `/opt/demo` and ask whether you want to overwrite
+> it. Enter **`n`** to keep the existing file — the WiFi module version of `app.py` installed in the previous step
+> must not be replaced.
+
 Follow [this guide](https://github.com/avnet-iotconnect/iotc-python-lite-sdk-demos/blob/main/common/general-guides/UI-ONBOARD.md) to walk you through the process.
 
 > [!TIP]
