@@ -1,0 +1,34 @@
+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+/*
+ *  Device Tree overlay for SAMA7D65-CURIOSITY board
+ *  to enable an I2C bus on mikroBUS2 (J26) for the MikroE
+ *  Environment Click (BME680, MIKROE-2467).
+ *
+ *  mikroBUS2 SCL/SDA (pins 12/11) are wired to PC6/PC7, which are
+ *  shared with mikroBUS1's SCL/SDA and the 40-pin RPi connector's
+ *  I2C bus. This overlay switches FLEXCOM0 into TWI (I2C) mode so
+ *  those shared pins behave as a standard I2C bus.
+ */
+/dts-v1/;
+/plugin/;
+#include "sama7d65-pinfunc.h"
+#include <dt-bindings/mfd/atmel-flexcom.h>
+
+&flx0 {
+	atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_TWI>;
+	status = "okay";
+};
+
+&i2c0 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_i2c0_default>;
+	status = "okay";
+};
+
+&pioa {
+	pinctrl_i2c0_default: i2c0-default {
+		pinmux = <PIN_PC6__FLEXCOM0_IO1>,
+			 <PIN_PC7__FLEXCOM0_IO0>;
+		bias-disable;
+	};
+};

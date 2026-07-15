@@ -1,0 +1,59 @@
+{
+    "code": "sama7dEnviro",
+    "name": "sama7d65-environmental-data",
+    "authType": 2,
+    "attributes": [
+        {
+            "name": "sdk_version",
+            "displayName": "SDK Version",
+            "type": "STRING",
+            "description": "IoTConnect SDK version",
+            "unit": "",
+            "aggregateTypes": []
+        },
+        {
+            "name": "temperature_c",
+            "displayName": "Temperature",
+            "type": "DECIMAL",
+            "description": "Ambient temperature",
+            "unit": "°C",
+            "aggregateTypes": ["avg", "min", "max"]
+        },
+        {
+            "name": "humidity_rh",
+            "displayName": "Humidity",
+            "type": "DECIMAL",
+            "description": "Relative humidity",
+            "unit": "%RH",
+            "aggregateTypes": ["avg", "min", "max"]
+        },
+        {
+            "name": "pressure_hpa",
+            "displayName": "Pressure",
+            "type": "DECIMAL",
+            "description": "Barometric pressure",
+            "unit": "hPa",
+            "aggregateTypes": ["avg", "min", "max"]
+        },
+        {
+            "name": "gas_resistance_ohms",
+            "displayName": "Gas Resistance",
+            "type": "DECIMAL",
+            "description": "BME680 gas sensor resistance (higher = cleaner air, not a calibrated ppm reading). Omitted from telemetry for the first several readings after startup while the sensor's heater stabilizes -- expect null values then.",
+            "unit": "Ω",
+            "aggregateTypes": ["avg", "min", "max"]
+        }
+    ],
+    "commands": [],
+    "messageVersion": "2.1",
+    "properties": {
+        "description": "Microchip SAMA7D65-Curiosity + EV12H55A WiFi Module - Environmental Data Expansion Demo (MikroE Environment Click / BME680 on mikroBUS2)",
+        "dataFrequency": "10",
+        "fileSupport": false,
+        "certRenewalDay": 0,
+        "enableCSR": false
+    },
+    "_meta": {
+        "version": "2.0"
+    }
+}

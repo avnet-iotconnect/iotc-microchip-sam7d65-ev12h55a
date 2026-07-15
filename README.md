@@ -6,7 +6,8 @@
 4. [Device Setup](#4-device-setup)
 5. [Onboard Device](#5-onboard-device)
 6. [Using the Demo](#6-using-the-demo)
-7. [Resources](#7-resources)
+7. [Going Further: Expansion Demos](#7-going-further-expansion-demos)
+8. [Resources](#8-resources)
 
 # 1. Introduction
 
@@ -234,7 +235,21 @@ On startup, the app joins your WiFi network through the module, then routes all 
 resolution, HTTPS calls to the /IOTCONNECT discovery and identity APIs, and the MQTT connection. No Ethernet cable
 is needed at runtime. View the random-integer telemetry data under the "Live Data" tab for your device on /IOTCONNECT.
 
-# 7. Resources
+# 7. Going Further: Expansion Demos
+
+Once the quickstart above is working, you can patch it with a software package to send real sensor data instead of
+random integers, without changing anything about the hardware/WiFi setup you already completed.
+
+## Environmental Data Demo
+
+Adds a [MikroE Environment Click](https://www.mikroe.com/environment-click) (Bosch BME680) board to the second
+mikroBUS socket (mikroBUS2) and streams real temperature, humidity, pressure, and gas (VOC) readings to
+/IOTCONNECT in place of the quickstart's random-integer telemetry. The WiFi module stays right where it is on
+mikroBUS1.
+
+See [environmental-data/README.md](environmental-data/README.md) to get started.
+
+# 8. Resources
 
 * [Purchase the Microchip EV63J76A (SAMA7D65 Curiosity Kit)](https://www.newark.com/microchip/ev63j76a/development-kit-arm-cortex-a7/dp/46AM2853)
 * [Purchase the Microchip EV12H55A (RNWF11 WiFi Add-on Board)](https://www.microchipdirect.com/dev-tools/EV12H55A?allDevTools=true)
