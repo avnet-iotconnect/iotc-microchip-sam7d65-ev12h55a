@@ -39,9 +39,6 @@ LVDS w/ 2D graphics, dual Gigabit Ethernet w/ TSN and CAN-FD.</td>
 
 # 2. Requirements
 
-This guide has been written and tested to work on a Windows 10/11 PC. However, there is no reason this can't be
-replicated in other environments.
-
 ## Hardware
 
 * Microchip EV63J76A (SAMA7D65 Curiosity Kit) [Purchase](https://www.newark.com/microchip/ev63j76a/development-kit-arm-cortex-a7/dp/46AM2853) | [User Manual & Kit Contents](https://ww1.microchip.com/downloads/aemDocuments/documents/MPU32/ProductDocuments/UserGuides/SAMA7D65-Curiosity-Kit-User-Guide-DS50003806.pdf) | [All Resources](https://www.microchip.com/en-us/development-tool/EV63J76A)
