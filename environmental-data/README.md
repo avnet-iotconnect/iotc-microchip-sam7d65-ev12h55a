@@ -12,11 +12,12 @@ changes what data gets sent, not how it gets there.
 
 1. [Introduction](#1-introduction)
 2. [Set Up Hardware](#2-set-up-hardware)
-3. [Enable the mikroBUS2 I2C Bus](#3-enable-the-mikrobus2-i2c-bus)
-4. [Change Device Template](#4-change-device-template)
-5. [Deploy and Run](#5-deploy-and-run)
-6. [Telemetry](#6-telemetry)
-7. [Resources](#7-resources)
+3. [Download and Install the Package](#3-download-and-install-the-package)
+4. [Enable the mikroBUS2 I2C Bus](#4-enable-the-mikrobus2-i2c-bus)
+5. [Change Device Template](#5-change-device-template)
+6. [Run the Demo](#6-run-the-demo)
+7. [Telemetry](#7-telemetry)
+8. [Resources](#8-resources)
 
 # 1. Introduction
 
@@ -49,17 +50,32 @@ needed:
 * **COMM. SEL** jumpers (JP1, JP3, JP4, JP5): factory default, I2C mode
 * **ADDR. SEL** jumper (JP2): factory default, position `1` (I2C address `0x77`)
 
-# 3. Enable the mikroBUS2 I2C Bus
+# 3. Download and Install the Package
+
+On the board, run:
+
+```bash
+cd /opt/demo
+wget -O env-package.tar.gz https://avnetpublicaccess.s3.us-east-1.amazonaws.com/environmental-data-src.zip
+tar -xzf env-package.tar.gz --overwrite
+bash ./install.sh
+```
+
+> [!IMPORTANT]
+> Installation will ask whether to overwrite the existing `app.py`. Enter **`y`** this time — unlike the initial
+> quickstart onboarding step, you *do* want this package's `app.py` (with real sensor readings) to replace the
+> WiFi-only quickstart version.
+
+This lands `apply_environment_overlay.py`, `sama7d65_curiosity_environment_click2.dtbo`, `app.py`, and the rest of
+this demo's files in `/opt/demo`, alongside the quickstart's existing files.
+
+# 4. Enable the mikroBUS2 I2C Bus
 
 Just like mikroBUS1's UART, mikroBUS2's I2C pins are not enabled by default — the board's device tree leaves the
-FLEXCOM peripheral behind them unconfigured out of the box. This package includes a second device tree overlay and
-setup script that enables it permanently, alongside the WiFi overlay from the quickstart.
+FLEXCOM peripheral behind them unconfigured out of the box. The package you just installed includes a second device
+tree overlay and setup script that enables it permanently, alongside the WiFi overlay from the quickstart.
 
-1. On the board, download and extract this package (see [Deploy and Run](#5-deploy-and-run) below for the full
-   command) so that `apply_environment_overlay.py` and `sama7d65_curiosity_environment_click2.dtbo` land in
-   `/opt/demo`.
-
-2. Run the setup script:
+1. Run the setup script:
 
    ```
    python3 /opt/demo/apply_environment_overlay.py
@@ -69,7 +85,7 @@ setup script that enables it permanently, alongside the WiFi overlay from the qu
    every boot, and copies the new overlay file onto the boot partition. It's safe to run regardless of whether the
    WiFi overlay was applied first — it rewrites the full boot sequence rather than assuming the prior state.
 
-3. Power-cycle the board (unplug and replug the USB-C power cable — **a soft reset/reboot is not enough**, the same
+2. Power-cycle the board (unplug and replug the USB-C power cable — **a soft reset/reboot is not enough**, the same
    as with the WiFi overlay). After it boots back up, confirm the sensor is visible on I2C:
 
    ```
@@ -96,41 +112,20 @@ setup script that enables it permanently, alongside the WiFi overlay from the qu
 > wraps the I2C bus to transparently split those reads into 8-byte chunks. This is already handled for you — nothing
 > to configure — but worth knowing if you extend this driver or write your own I2C code against mikroBUS2.
 
-# 4. Change Device Template
+# 5. Change Device Template
 
 This demo sends different telemetry fields than the quickstart's random-integer template, so your device needs a
-template that defines them (see [Telemetry](#6-telemetry) below for the field list). Import the
+template that defines them (see [Telemetry](#7-telemetry) below for the field list). Import the
 [environmental-data-template.json](./environmental-data-template.json) device template to /IOTCONNECT and set it as
 your device's template (template code `sama7dEnviro`).
 
 > [!NOTE]
 > `gas_resistance_ohms` is omitted from telemetry messages for the first several readings after startup while the
-> BME680's gas heater stabilizes (see the [Deploy and Run](#5-deploy-and-run) note below) -- the template defines it
+> BME680's gas heater stabilizes (see the [Run the Demo](#6-run-the-demo) note below) -- the template defines it
 > as an optional attribute, so those early messages are expected to show it as `null` rather than indicating a
 > problem.
 
-# 5. Deploy and Run
-
-### Download and Install
-
-On the board, run:
-
-```bash
-cd /opt/demo
-wget -O env-package.tar.gz https://avnetpublicaccess.s3.us-east-1.amazonaws.com/environmental-data-src.zip
-tar -xzf env-package.tar.gz --overwrite
-bash ./install.sh
-```
-
-> [!IMPORTANT]
-> Installation will ask whether to overwrite the existing `app.py`. Enter **`y`** this time — unlike the initial
-> quickstart onboarding step, you *do* want this package's `app.py` (with real sensor readings) to replace the
-> WiFi-only quickstart version.
-
-Then follow [step 3](#3-enable-the-mikrobus2-i2c-bus) above to apply the I2C overlay and power-cycle the board, if
-you haven't already.
-
-### Run
+# 6. Run the Demo
 
 ```bash
 cd /opt/demo
@@ -146,7 +141,7 @@ under the **Live Data** tab for your device on /IOTCONNECT.
 > The app omits `gas_resistance_ohms` from telemetry for the first several readings while this happens — temperature,
 > humidity, and pressure are reported from the very first reading.
 
-# 6. Telemetry
+# 7. Telemetry
 
 | Field | Unit | Description |
 |-------|------|--------------|
@@ -156,7 +151,7 @@ under the **Live Data** tab for your device on /IOTCONNECT.
 | `pressure_hpa` | hPa | Barometric pressure |
 | `gas_resistance_ohms` | Ω | Gas sensor resistance (higher = cleaner air); omitted until the heater stabilizes after startup |
 
-# 7. Resources
+# 8. Resources
 
 * [MikroE Environment Click Product Page](https://www.mikroe.com/environment-click)
 * [Environment Click Datasheet](https://www.mikroe.com/environment-click#/263-clickid-yes)
