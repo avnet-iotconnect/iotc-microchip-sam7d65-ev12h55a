@@ -23,6 +23,8 @@ from rnwf11_transport import Rnwf11Error, Rnwf11MqttTransport, Rnwf11Uart, patch
 WIFI_CONFIG_PATH = "wifi_config.json"
 MQTT_PORT = 8883
 TELEMETRY_INTERVAL_SECS = 10
+WIFI_JOIN_MAX_ATTEMPTS = 5
+WIFI_JOIN_RETRY_DELAY_SECS = 5
 
 c = None
 
@@ -34,6 +36,23 @@ def load_wifi_config(path=WIFI_CONFIG_PATH) -> dict:
     except FileNotFoundError:
         print("Missing %s -- copy wifi_config.json.example to %s and fill in your WiFi credentials." % (path, path))
         sys.exit(1)
+
+
+def join_wifi_with_retry(uart: Rnwf11Uart, wifi_cfg: dict):
+    # Transient AP-side hiccups (busy channel, mesh roaming handoffs, etc.) can fail a single
+    # join attempt even with correct credentials and good signal -- retry a few times before
+    # giving up.
+    for attempt in range(1, WIFI_JOIN_MAX_ATTEMPTS + 1):
+        try:
+            uart.connect_wifi_if_needed(wifi_cfg["ssid"], wifi_cfg["password"], security=wifi_cfg.get("security"))
+            return
+        except Rnwf11Error as exc:
+            if attempt == WIFI_JOIN_MAX_ATTEMPTS:
+                raise
+            print("WiFi join attempt %d/%d failed: %s -- retrying in %ds" % (
+                attempt, WIFI_JOIN_MAX_ATTEMPTS, exc, WIFI_JOIN_RETRY_DELAY_SECS
+            ))
+            time.sleep(WIFI_JOIN_RETRY_DELAY_SECS)
 
 
 def patch_urllib(uart: Rnwf11Uart):
@@ -71,7 +90,7 @@ try:
     uart = Rnwf11Uart()
 
     print('Joining WiFi network "%s" via the RNWF11 module...' % wifi_cfg["ssid"])
-    uart.connect_wifi_if_needed(wifi_cfg["ssid"], wifi_cfg["password"], security=wifi_cfg.get("security"))
+    join_wifi_with_retry(uart, wifi_cfg)
     print("RNWF11 WiFi module connected.")
 
     patch_urllib(uart)
