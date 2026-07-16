@@ -1,13 +1,14 @@
 # SPDX-License-Identifier: MIT
 # Copyright (C) 2026 Avnet
-# Fully-wireless demo: both the SDK's HTTP discovery/identity calls and the MQTT connection
-# use the EV12H55A WiFi Add-on Board (RNWF11). No Ethernet is needed at runtime.
+# Environmental Data demo: upgrades the WiFi quickstart's random-integer telemetry
+# with real temperature/humidity/pressure/gas readings from a MikroE Environment
+# Click (BME680) plugged into mikroBUS2, while still connecting over the
+# EV12H55A WiFi Add-on Board (RNWF11) on mikroBUS1.
 # urllib is patched before the SDK Client is created so its HTTPS calls go through
 # dns_resolve + https_get in rnwf11_transport.py. MQTT is bridged through the same module.
 
 import io
 import json
-import random
 import sys
 import time
 import urllib.request
@@ -16,10 +17,12 @@ from avnet.iotconnect.sdk.lite import Client, DeviceConfig, C2dCommand, Callback
 from avnet.iotconnect.sdk.lite import __version__ as SDK_VERSION
 from avnet.iotconnect.sdk.sdklib.mqtt import C2dAck
 
+from environment_click import EnvironmentClick
 from rnwf11_transport import Rnwf11Error, Rnwf11MqttTransport, Rnwf11Uart, patch_paho_transport
 
 WIFI_CONFIG_PATH = "wifi_config.json"
 MQTT_PORT = 8883
+TELEMETRY_INTERVAL_SECS = 10
 WIFI_JOIN_MAX_ATTEMPTS = 5
 WIFI_JOIN_RETRY_DELAY_SECS = 5
 
@@ -98,6 +101,10 @@ try:
         device_pkey_path="device-pkey.pem"
     )
 
+    print("Initializing Environment Click (BME680) on mikroBUS2...")
+    sensor = EnvironmentClick()
+    print("Environment Click ready.")
+
     c = Client(
         config=device_config,
         callbacks=Callbacks(
@@ -118,11 +125,20 @@ try:
                 print('Unable to connect. Exiting.')
                 sys.exit(2)
 
+        reading = sensor.read()
+        print("  %.2f C, %.2f %%RH, %.2f hPa" % (
+            reading["temperature_c"], reading["humidity_rh"], reading["pressure_hpa"]
+        ), end="")
+        if "gas_resistance_ohms" in reading:
+            print(", %.1f ohm gas" % reading["gas_resistance_ohms"])
+        else:
+            print(" (gas heater stabilizing)")
+
         c.send_telemetry({
             'sdk_version': SDK_VERSION,
-            'random': random.randint(0, 100)
+            **reading
         })
-        time.sleep(10)
+        time.sleep(TELEMETRY_INTERVAL_SECS)
 
 except DeviceConfigError as dce:
     print(dce)

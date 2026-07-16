@@ -6,7 +6,9 @@
 4. [Device Setup](#4-device-setup)
 5. [Onboard Device](#5-onboard-device)
 6. [Using the Demo](#6-using-the-demo)
-7. [Resources](#7-resources)
+7. [Customizing and Redeploying the App](#7-customizing-and-redeploying-the-app)
+8. [Going Further: Expansion Demos](#8-going-further-expansion-demos)
+9. [Resources](#9-resources)
 
 # 1. Introduction
 
@@ -35,7 +37,7 @@ LVDS w/ 2D graphics, dual Gigabit Ethernet w/ TSN and CAN-FD.</td>
 > The EV12H55A WiFi module communicates over a UART using ASCII AT commands — it does not present itself to Linux as
 > a standard network interface (there is no `wlan0`). The demo application in this repo talks to it directly via
 > those AT commands for all network traffic: DNS resolution, HTTPS discovery/identity calls, and the MQTT connection.
-> While it is required for the intial installation and setup steps, **an ethernet connection is not required at runtime.**
+> While it is required for the initial installation and setup steps, **an Ethernet connection is not required at runtime.**
 
 # 2. Requirements
 
@@ -47,7 +49,7 @@ LVDS w/ 2D graphics, dual Gigabit Ethernet w/ TSN and CAN-FD.</td>
 * USB-C Cable (included in kit)
 * Standard SD Card or Micro-SD Card with Standard-Size Adapter (included in kit)
 * USB to TTL Serial 3.3V Adapter Cable (must be purchased separately,
-  click [here](https://www.amazon.com/Serial-Adapter-Signal-Prolific-Windows/dp/B07R8BQYW1/ref=sr_1_1_sspa?dib=eyJ2IjoiMSJ9.FmD0VbTCaTkt1T0GWjF9bV9JG8X8vsO9mOXf1xuNFH8GM1jsIB9IboaQEQQBGJYV_o_nruq-GD0QXa6UOZwTpk1x_ISqW9uOD5XoQcFwm3mmgmOJG--qv3qo5MKNzVE4aKtjwEgZcZwB_d7hWTgk11_JJaqLFd1ouFBFoU8aMUWHaEGBbj5TtX4T6Z_8UMSFS4H1lh2WF5LRprjLkSLUMF656W-kCM4MGU5xLU5npMw.oUFW_sOLeWrhVW0VapPsGa03-dpdq8k5rL4asCbLmDs&dib_tag=se&keywords=detch+usb+to+ttl+serial+cable&qid=1740167263&sr=8-1-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&psc=1)
+  click [here](https://www.amazon.com/Serial-Adapter-Signal-Prolific-Windows/dp/B07R8BQYW1/ref=sr_1_1_sspa?dib=eyJ2IjoiMSJ9.FmD0VbTCaTkt1T0GWjF9bV9JG8X8vsO9mOXf1xuNFH8GM1jsIB9IboaQEQQBGJYV_o_nruq-GD0QXa6UOZwTpk1x_ISqW9uOD5XoQcFwm3mmgmOJG--qv3qo5MKNzVE4aKtjwEgZcZwB_d7hWTgk11_JJaqLFd1ouFBFoU8aMUWHaEGBbj5TtX4T6Z_8UMSFS4H1lh2WF5LRprjLkSLUMF656W-kCM4MGU5xLU5npMw.oUFW_sOLeWrhVW0VapPsGa03-dpdq8k5rL4asCbLmDs&dib_tag=se&keywords=fetch+usb+to+ttl+serial+cable&qid=1740167263&sr=8-1-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&psc=1)
   to see the cable used by Avnet's engineer)
 
 > [!NOTE]
@@ -234,7 +236,65 @@ On startup, the app joins your WiFi network through the module, then routes all 
 resolution, HTTPS calls to the /IOTCONNECT discovery and identity APIs, and the MQTT connection. No Ethernet cable
 is needed at runtime. View the random-integer telemetry data under the "Live Data" tab for your device on /IOTCONNECT.
 
-# 7. Resources
+# 7. Customizing and Redeploying the App
+
+If you want to modify this demo — change what telemetry gets sent, add new logic to `app.py`, etc. — you can rebuild
+and redeploy the package yourself.
+
+> [!IMPORTANT]
+> The prebuilt `wifi-module-src.zip` used in [step 4](#4-device-setup) is hosted in Avnet's own S3 bucket, which you
+> don't have upload access to. A package you rebuild locally has to be delivered to the board directly (over SCP)
+> rather than via that `wget` URL — the steps below cover that.
+
+1. **Make your changes.** In your local clone of this repo, edit files in `src/` (or add new ones). This is the same
+   directory that gets zipped up into the package.
+
+2. **Rebuild the package.** From the repo root, run:
+
+   ```bash
+   bash ./create-package.sh
+   ```
+
+   This produces `wifi-module-src.zip` in the repo root (and a copy in `packages/`).
+
+3. **Copy it to the board.** Find your board's IP address, then `scp` the archive directly into `/opt/demo`:
+
+   ```bash
+   scp wifi-module-src.zip root@<BOARD_IP>:/opt/demo/
+   ```
+
+4. **Extract and install on the board.** SSH in and run the same install steps [step 4](#4-device-setup) used, minus
+   the `wget`:
+
+   ```bash
+   ssh root@<BOARD_IP>
+   cd /opt/demo
+   unzip -o wifi-module-src.zip
+   bash ./install.sh
+   ```
+
+   `unzip -o` overwrites the existing files in `/opt/demo`, including `app.py`, without prompting. Then run it as
+   usual:
+
+   ```bash
+   python3 app.py
+   ```
+
+# 8. Going Further: Expansion Demos
+
+Once the quickstart above is working, you can patch it with a software package to send real sensor data instead of
+random integers, without changing anything about the hardware/WiFi setup you already completed.
+
+## Environmental Data Demo
+
+Adds a [MikroE Environment Click](https://www.mikroe.com/environment-click) (Bosch BME680) board to the second
+mikroBUS socket (mikroBUS2) and streams real temperature, humidity, pressure, and gas (VOC) readings to
+/IOTCONNECT in place of the quickstart's random-integer telemetry. The WiFi module stays right where it is on
+mikroBUS1.
+
+See [environmental-data/README.md](environmental-data/README.md) to get started.
+
+# 9. Resources
 
 * [Purchase the Microchip EV63J76A (SAMA7D65 Curiosity Kit)](https://www.newark.com/microchip/ev63j76a/development-kit-arm-cortex-a7/dp/46AM2853)
 * [Purchase the Microchip EV12H55A (RNWF11 WiFi Add-on Board)](https://www.microchipdirect.com/dev-tools/EV12H55A?allDevTools=true)
