@@ -37,7 +37,7 @@ LVDS w/ 2D graphics, dual Gigabit Ethernet w/ TSN and CAN-FD.</td>
 > The EV12H55A WiFi module communicates over a UART using ASCII AT commands — it does not present itself to Linux as
 > a standard network interface (there is no `wlan0`). The demo application in this repo talks to it directly via
 > those AT commands for all network traffic: DNS resolution, HTTPS discovery/identity calls, and the MQTT connection.
-> While it is required for the intial installation and setup steps, **an ethernet connection is not required at runtime.**
+> While it is required for the initial installation and setup steps, **an Ethernet connection is not required at runtime.**
 
 # 2. Requirements
 
@@ -49,7 +49,7 @@ LVDS w/ 2D graphics, dual Gigabit Ethernet w/ TSN and CAN-FD.</td>
 * USB-C Cable (included in kit)
 * Standard SD Card or Micro-SD Card with Standard-Size Adapter (included in kit)
 * USB to TTL Serial 3.3V Adapter Cable (must be purchased separately,
-  click [here](https://www.amazon.com/Serial-Adapter-Signal-Prolific-Windows/dp/B07R8BQYW1/ref=sr_1_1_sspa?dib=eyJ2IjoiMSJ9.FmD0VbTCaTkt1T0GWjF9bV9JG8X8vsO9mOXf1xuNFH8GM1jsIB9IboaQEQQBGJYV_o_nruq-GD0QXa6UOZwTpk1x_ISqW9uOD5XoQcFwm3mmgmOJG--qv3qo5MKNzVE4aKtjwEgZcZwB_d7hWTgk11_JJaqLFd1ouFBFoU8aMUWHaEGBbj5TtX4T6Z_8UMSFS4H1lh2WF5LRprjLkSLUMF656W-kCM4MGU5xLU5npMw.oUFW_sOLeWrhVW0VapPsGa03-dpdq8k5rL4asCbLmDs&dib_tag=se&keywords=detch+usb+to+ttl+serial+cable&qid=1740167263&sr=8-1-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&psc=1)
+  click [here](https://www.amazon.com/Serial-Adapter-Signal-Prolific-Windows/dp/B07R8BQYW1/ref=sr_1_1_sspa?dib=eyJ2IjoiMSJ9.FmD0VbTCaTkt1T0GWjF9bV9JG8X8vsO9mOXf1xuNFH8GM1jsIB9IboaQEQQBGJYV_o_nruq-GD0QXa6UOZwTpk1x_ISqW9uOD5XoQcFwm3mmgmOJG--qv3qo5MKNzVE4aKtjwEgZcZwB_d7hWTgk11_JJaqLFd1ouFBFoU8aMUWHaEGBbj5TtX4T6Z_8UMSFS4H1lh2WF5LRprjLkSLUMF656W-kCM4MGU5xLU5npMw.oUFW_sOLeWrhVW0VapPsGa03-dpdq8k5rL4asCbLmDs&dib_tag=se&keywords=fetch+usb+to+ttl+serial+cable&qid=1740167263&sr=8-1-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&psc=1)
   to see the cable used by Avnet's engineer)
 
 > [!NOTE]
