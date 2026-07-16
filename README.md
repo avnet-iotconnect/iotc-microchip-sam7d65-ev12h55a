@@ -255,7 +255,7 @@ and redeploy the package yourself.
    bash ./create-package.sh
    ```
 
-   This produces `wifi-module-src.zip` in the repo root (and a copy in `packages/`).
+   This produces `wifi-module-src.zip` in the repo root.
 
 3. **Copy it to the board.** Find your board's IP address, then `scp` the archive directly into `/opt/demo`:
 

@@ -127,8 +127,7 @@ settings in `environment_click.py`, add more source files, etc. — you can rebu
    bash ./create-package.sh
    ```
 
-   This produces `environmental-data-src.zip` in the `environmental-data` directory (and a copy in
-   `environmental-data/packages/`).
+   This produces `environmental-data-src.zip` in the `environmental-data` directory.
 
 3. **Copy it to the board.** Find your board's IP address, then `scp` the archive directly into `/opt/demo`:
 
