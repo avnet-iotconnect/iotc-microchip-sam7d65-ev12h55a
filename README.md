@@ -6,8 +6,9 @@
 4. [Device Setup](#4-device-setup)
 5. [Onboard Device](#5-onboard-device)
 6. [Using the Demo](#6-using-the-demo)
-7. [Going Further: Expansion Demos](#7-going-further-expansion-demos)
-8. [Resources](#8-resources)
+7. [Customizing and Redeploying the App](#7-customizing-and-redeploying-the-app)
+8. [Going Further: Expansion Demos](#8-going-further-expansion-demos)
+9. [Resources](#9-resources)
 
 # 1. Introduction
 
@@ -235,7 +236,51 @@ On startup, the app joins your WiFi network through the module, then routes all 
 resolution, HTTPS calls to the /IOTCONNECT discovery and identity APIs, and the MQTT connection. No Ethernet cable
 is needed at runtime. View the random-integer telemetry data under the "Live Data" tab for your device on /IOTCONNECT.
 
-# 7. Going Further: Expansion Demos
+# 7. Customizing and Redeploying the App
+
+If you want to modify this demo — change what telemetry gets sent, add new logic to `app.py`, etc. — you can rebuild
+and redeploy the package yourself.
+
+> [!IMPORTANT]
+> The prebuilt `wifi-module-src.zip` used in [step 4](#4-device-setup) is hosted in Avnet's own S3 bucket, which you
+> don't have upload access to. A package you rebuild locally has to be delivered to the board directly (over SCP)
+> rather than via that `wget` URL — the steps below cover that.
+
+1. **Make your changes.** In your local clone of this repo, edit files in `src/` (or add new ones). This is the same
+   directory that gets zipped up into the package.
+
+2. **Rebuild the package.** From the repo root, run:
+
+   ```bash
+   bash ./create-package.sh
+   ```
+
+   This produces `wifi-module-src.zip` in the repo root (and a copy in `packages/`).
+
+3. **Copy it to the board.** Find your board's IP address, then `scp` the archive directly into `/opt/demo`:
+
+   ```bash
+   scp wifi-module-src.zip root@<BOARD_IP>:/opt/demo/
+   ```
+
+4. **Extract and install on the board.** SSH in and run the same install steps [step 4](#4-device-setup) used, minus
+   the `wget`:
+
+   ```bash
+   ssh root@<BOARD_IP>
+   cd /opt/demo
+   unzip -o wifi-module-src.zip
+   bash ./install.sh
+   ```
+
+   `unzip -o` overwrites the existing files in `/opt/demo`, including `app.py`, without prompting. Then run it as
+   usual:
+
+   ```bash
+   python3 app.py
+   ```
+
+# 8. Going Further: Expansion Demos
 
 Once the quickstart above is working, you can patch it with a software package to send real sensor data instead of
 random integers, without changing anything about the hardware/WiFi setup you already completed.
@@ -249,7 +294,7 @@ mikroBUS1.
 
 See [environmental-data/README.md](environmental-data/README.md) to get started.
 
-# 8. Resources
+# 9. Resources
 
 * [Purchase the Microchip EV63J76A (SAMA7D65 Curiosity Kit)](https://www.newark.com/microchip/ev63j76a/development-kit-arm-cortex-a7/dp/46AM2853)
 * [Purchase the Microchip EV12H55A (RNWF11 WiFi Add-on Board)](https://www.microchipdirect.com/dev-tools/EV12H55A?allDevTools=true)

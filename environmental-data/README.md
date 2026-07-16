@@ -16,8 +16,9 @@ changes what data gets sent, not how it gets there.
 4. [Enable the mikroBUS2 I2C Bus](#4-enable-the-mikrobus2-i2c-bus)
 5. [Change Device Template](#5-change-device-template)
 6. [Run the Demo](#6-run-the-demo)
-7. [Telemetry](#7-telemetry)
-8. [Resources](#8-resources)
+7. [Customize and Redeploy the Package](#7-customize-and-redeploy-the-package)
+8. [Telemetry](#8-telemetry)
+9. [Resources](#9-resources)
 
 # 1. Introduction
 
@@ -44,8 +45,8 @@ On the board, run:
 
 ```bash
 cd /opt/demo
-wget -O env-package.tar.gz https://avnetpublicaccess.s3.us-east-1.amazonaws.com/environmental-data-src.zip
-tar -xzf env-package.tar.gz --overwrite
+wget -O environmental-data-src.zip https://avnetpublicaccess.s3.us-east-1.amazonaws.com/environmental-data-src.zip
+unzip -o environmental-data-src.zip
 bash ./install.sh
 ```
 
@@ -97,7 +98,53 @@ The application connects to WiFi through the RNWF11 module exactly as the quicks
 Environment Click over I2C, then reads and publishes all four measurements every 10 seconds. View the readings
 under the **Live Data** tab for your device on /IOTCONNECT.
 
-# 7. Telemetry
+# 7. Customize and Redeploy the Package
+
+If you want to modify this demo — change the telemetry logic in `app.py`, tweak the BME680's oversampling/heater
+settings in `environment_click.py`, add more source files, etc. — you can rebuild and redeploy the package yourself.
+
+> [!IMPORTANT]
+> The prebuilt `environmental-data-src.zip` used in [step 3](#3-download-and-install-the-package) is hosted in
+> Avnet's own S3 bucket, which you don't have upload access to. A package you rebuild locally has to be delivered to
+> the board directly (over SCP) rather than via that `wget` URL — the steps below cover that.
+
+1. **Make your changes.** In your local clone of this repo, edit files in `environmental-data/src/` (or add new
+   ones). This is the same directory that gets zipped up into the package.
+
+2. **Rebuild the package.** From the `environmental-data` directory, run:
+
+   ```bash
+   cd environmental-data
+   bash ./create-package.sh
+   ```
+
+   This produces `environmental-data-src.zip` in the `environmental-data` directory (and a copy in
+   `environmental-data/packages/`).
+
+3. **Copy it to the board.** Find your board's IP address, then `scp` the archive directly into `/opt/demo`:
+
+   ```bash
+   scp environmental-data-src.zip root@<BOARD_IP>:/opt/demo/
+   ```
+
+4. **Extract and install on the board.** SSH in and run the same install steps [step 3](#3-download-and-install-the-package)
+   used, minus the `wget`:
+
+   ```bash
+   ssh root@<BOARD_IP>
+   cd /opt/demo
+   unzip -o environmental-data-src.zip
+   bash ./install.sh
+   ```
+
+   `unzip -o` overwrites the existing files in `/opt/demo`, including `app.py`, without prompting. Then run it as
+   usual:
+
+   ```bash
+   python3 app.py
+   ```
+
+# 8. Telemetry
 
 | Field | Unit | Description |
 |-------|------|--------------|
@@ -109,11 +156,10 @@ under the **Live Data** tab for your device on /IOTCONNECT.
 
 > [!NOTE]
 > `gas_resistance_ohms` is omitted from telemetry messages for the first several readings after startup while the
-> BME680's gas heater stabilizes (see the [Run the Demo](#6-run-the-demo) note below) -- the template defines it
-> as an optional attribute, so those early messages are expected to show it as `null` rather than indicating a
-> problem.
+> BME680's gas heater stabilizes -- the template defines it as an optional attribute, so those early messages are
+> expected to show it as `null` rather than indicating a problem.
 
-# 8. Resources
+# 9. Resources
 
 * [MikroE Environment Click Product Page](https://www.mikroe.com/environment-click)
 * [Environment Click Datasheet](https://www.mikroe.com/environment-click#/263-clickid-yes)
