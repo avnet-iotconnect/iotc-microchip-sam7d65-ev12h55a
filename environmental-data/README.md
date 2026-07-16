@@ -6,6 +6,8 @@ pressure, and gas (VOC) data from a [MikroE Environment Click](https://www.mikro
 telemetry. The EV12H55A WiFi Add-on Board stays attached and continues to provide connectivity — this demo only
 changes what data gets sent, not how it gets there.
 
+<img src="./media/env-click.png" width="200" />
+
 > [!IMPORTANT]
 > Complete the [quickstart guide](../README.md) for this repo first, including the WiFi module setup. This guide
 > assumes the EV12H55A WiFi Add-on Board is already seated in mikroBUS1 (J25) and working.
