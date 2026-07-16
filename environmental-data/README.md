@@ -11,7 +11,7 @@ changes what data gets sent, not how it gets there.
 > assumes the EV12H55A WiFi Add-on Board is already seated in mikroBUS1 (J25) and working.
 
 1. [Introduction](#1-introduction)
-2. [Set Up Hardware](#2-set-up-hardware)
+2. [Additonal Hardware Setup](#2-additional-hardware-setup)
 3. [Download and Install the Package](#3-download-and-install-the-package)
 4. [Enable the mikroBUS2 I2C Bus](#4-enable-the-mikrobus2-i2c-bus)
 5. [Change Device Template](#5-change-device-template)
@@ -33,11 +33,15 @@ The Environment Click carries a Bosch **BME680** environmental sensor, a 4-in-1 
 * Barometric pressure
 * Gas resistance (an indicator of VOC/air-quality changes — not a calibrated ppm reading)
 
-# 2. Set Up Hardware
+# 2. Additonal Hardware Setup
 
 With the WiFi module already seated in mikroBUS1 from the quickstart guide, plug the Environment Click into
 **mikroBUS2** — the socket that the quickstart's WiFi guide marked with a red X (i.e., the one it told you *not* to
 use for the WiFi module). Align the Click board's pins with the socket and press it down firmly until fully seated.
+
+> [!NOTE]
+> An Ethernet connection is required to complete package downloads and installation in Step 3. After Step 3 is complete,
+> the Ethernet connection is no longer required.
 
 # 3. Download and Install the Package
 
