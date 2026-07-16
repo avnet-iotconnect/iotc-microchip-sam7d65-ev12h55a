@@ -35,11 +35,14 @@ The Environment Click carries a Bosch **BME680** environmental sensor, a 4-in-1 
 * Barometric pressure
 * Gas resistance (an indicator of VOC/air-quality changes — not a calibrated ppm reading)
 
-# 2. Additonal Hardware Setup
+# 2. Additional Hardware Setup
 
 With the WiFi module already seated in mikroBUS1 from the quickstart guide, plug the Environment Click into
-**mikroBUS2** — the socket that the quickstart's WiFi guide marked with a red X (i.e., the one it told you *not* to
-use for the WiFi module). Align the Click board's pins with the socket and press it down firmly until fully seated.
+**mikroBUS2** as shown here:
+
+<img src="./media/env-click-seat.png" width="400" />
+
+Align the Click board's pins with the socket and press it down firmly until fully seated.
 
 > [!NOTE]
 > An Ethernet connection is required to complete package downloads and installation in Step 3. After Step 3 is complete,
